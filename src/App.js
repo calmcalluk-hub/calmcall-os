@@ -1,4 +1,3 @@
-// eslint-disable
 import { useState, useEffect, useRef } from "react";
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
