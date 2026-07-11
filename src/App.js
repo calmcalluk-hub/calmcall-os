@@ -992,10 +992,24 @@ export default function App() {
           <NavSidebar/>
         </div>
 
+        {/* Mobile drawer overlay */}
+        {mobileNav && (
+          <div onClick={()=>setMobileNav(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:300}} id="mobile-overlay">
+            <div onClick={e=>e.stopPropagation()} style={{position:"absolute",top:0,left:0,bottom:0,width:240,maxWidth:"80vw"}}>
+              <NavSidebar/>
+            </div>
+          </div>
+        )}
+
         {/* Main */}
         <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0}}>
           {/* Topbar */}
           <div style={{height:56,background:T.white,borderBottom:`1px solid ${T.border}`,display:"flex",alignItems:"center",padding:"0 24px",gap:12,position:"sticky",top:0,zIndex:100}}>
+            <button
+              onClick={()=>setMobileNav(true)}
+              className="mobile-nav-btn"
+              style={{display:"none",border:"none",background:T.cream,borderRadius:8,width:34,height:34,flexShrink:0,alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:16,color:T.charcoal}}
+            >☰</button>
             <div style={{flex:1,position:"relative",maxWidth:400}}>
               <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",color:T.charcoalL,fontSize:14}}>🔍</span>
               <Input
