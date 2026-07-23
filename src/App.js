@@ -45,7 +45,7 @@ const SEED = {
     { id:7,  title:"Create pitch deck",                   assignee:1, creator:1, project:4, priority:"High",     status:"Backlog",     due:"2026-07-25", area:"Sales",    description:"Founder-friendly 8-slide deck." },
     { id:8,  title:"Register company at Companies House", assignee:1, creator:1, project:6, priority:"Critical", status:"Complete",    due:"2026-07-01", area:"Legal",    description:"Ltd company registration." },
     { id:9,  title:"Open business bank account",          assignee:3, creator:3, project:6, priority:"High",     status:"In Progress", due:"2026-07-20", area:"Finance",  description:"Starling or Tide for startup." },
-    { id:10, title:"Define pricing packages",             assignee:1, creator:1, project:3, priority:"High",     status:"Backlog",     due:"2026-07-28", area:"Product",  description:"Starter, Growth, Pro tiers." },
+    { id:10, title:"Define pricing packages",             assignee:1, creator:1, project:3, priority:"High",     status:"Backlog",     due:"2026-07-28", area:"Product",  description:"Basic, Elite, Enterprise tiers." },
   ],
   decisions: [
     { id:1, title:"Target market: tradespeople first",   date:"2026-07-01", decision:"Focus exclusively on mechanics, plumbers, electricians for MVP", reasoning:"Largest pain point, easiest to reach, proven willingness to pay", people:[1,2,3], status:"Agreed",   project:3 },
@@ -59,6 +59,15 @@ const SEED = {
     { id:3, title:"Referral scheme for tradespeople",          description:"Plumber refers electrician, both get a month free",                       submittedBy:3, date:"2026-07-06", category:"Growth",   status:"New",        value:"High",      effort:"Low"    },
     { id:4, title:"Weekly call report email to business owner",description:"Auto-send a Monday morning summary of last week's calls",                  submittedBy:1, date:"2026-07-08", category:"Product", status:"Approved",   value:"High",      effort:"Low"    },
     { id:5, title:"CalmCall for dental practices",             description:"Expand target market to include dentists and medical clinics",              submittedBy:3, date:"2026-07-09", category:"Growth",   status:"Parked",     value:"Medium",    effort:"Medium" },
+  ],
+  // NOTE: placeholder/mock rows for the Customers page UI — replace with real
+  // customers as they convert from the leads pipeline above.
+  customers: [
+    { id:1, name:"Dave Mitchell",  business:"Riverside Auto Repairs",   trade:"Mechanic",    email:"dave@riversideauto.co.uk",   phone:"07700 900123", tier:"Elite", signupDate:"2026-06-02", renewalDate:"2026-12-02", nextCallDate:"2026-08-04" },
+    { id:2, name:"Sarah Connor",   business:"FastFlow Plumbing",        trade:"Plumber",      email:"sarah@fastflow.co.uk",       phone:"07700 900456", tier:"Basic", signupDate:"2026-06-18", renewalDate:"2026-09-18", nextCallDate:null },
+    { id:3, name:"Tom Richards",   business:"Bright Spark Electric",    trade:"Electrician",  email:"tom@brightspark.co.uk",      phone:"07700 900789", tier:"Enterprise", signupDate:"2026-05-27", renewalDate:"2026-11-27", nextCallDate:"2026-07-31" },
+    { id:4, name:"Mike Hassan",    business:"AllLocks 24/7",            trade:"Locksmith",    email:"mike@alllocks.co.uk",        phone:"07700 900321", tier:"Basic", signupDate:"2026-07-01", renewalDate:"2026-10-01", nextCallDate:null },
+    { id:5, name:"Priya Sharma",   business:"City Garage Services",     trade:"Mechanic",     email:"priya@citygarage.co.uk",     phone:"07700 900654", tier:"Elite", signupDate:"2026-04-11", renewalDate:"2026-10-11", nextCallDate:"2026-08-11" },
   ],
   leads: [
     { id:1, company:"Riverside Auto Repairs",  contact:"Dave Mitchell",  phone:"07700 900123", email:"dave@riversideauto.co.uk",  industry:"Mechanic",     stage:"Demo booked",  owner:3, value:1200, lastContact:"2026-07-10", nextAction:"Run demo", nextActionDate:"2026-07-14" },
@@ -87,7 +96,7 @@ const SEED = {
   documents: [
     { id:1, title:"Company Vision & Mission",  category:"Company",  author:1, updated:"2026-07-01", content:"CalmCall exists to ensure no small business owner ever loses a customer because they missed a phone call. We start with tradespeople and grow from there." },
     { id:2, title:"Brand Guidelines",          category:"Brand",    author:1, updated:"2026-07-05", content:"Teal (#2A7C6F), Charcoal (#1C2331), White, Gold accents. Typography: clean, modern sans-serif. Premium, calm, trustworthy." },
-    { id:3, title:"Business Model",            category:"Product",  author:2, updated:"2026-07-08", content:"Monthly SaaS subscription. Starter: £49/mo. Growth: £99/mo. Pro: £199/mo. Optional setup fee: £149." },
+    { id:3, title:"Business Model",            category:"Product",  author:2, updated:"2026-07-08", content:"Monthly SaaS subscription. Basic: £89/mo. Elite: £129/mo. Enterprise: custom multi-staff pod pricing. Optional setup fee: £149." },
   ],
 };
 
@@ -123,6 +132,13 @@ const priorityColors = {
   "Normal":{bg:T.tealXL,color:T.teal},"Low":{bg:T.border,color:T.charcoalL},
 };
 const PC = p => priorityColors[p]||{bg:T.border,color:T.charcoalL};
+
+// ─── PRICING TIERS (from Business Model doc) ───────────────────────────────────
+const TIER_INFO = {
+  Basic:      { price:89,  color:T.charcoalL, bg:T.border,  includes:["Missed-call SMS capture","Caller confirmation text","Callback reminder"] },
+  Elite:      { price:129, color:T.teal,      bg:T.tealXL,  includes:["Everything in Basic","Branded caller ID","Calendar booking sync","Monthly account call"] },
+  Enterprise: { price:null, color:T.gold,     bg:T.goldL,   includes:["Everything in Elite","Multi-staff pod setup","Dedicated account manager","Priority support","Custom integrations"] },
+};
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
 const Modal = ({title,onClose,children,width=560})=>(
@@ -199,6 +215,7 @@ const NAV_ITEMS = [
   {id:"tasks",label:"Tasks",icon:"✓"},
   {id:"projects",label:"Projects",icon:"◈"},
   {id:"crm",label:"CRM",icon:"◷"},
+  {id:"customers",label:"Customers",icon:"☎"},
   {id:"decisions",label:"Decisions",icon:"⚑"},
   {id:"ideas",label:"Ideas",icon:"✦"},
   {id:"meetings",label:"Meetings",icon:"⊡"},
@@ -745,6 +762,93 @@ const CRM = ({data,setData,user})=>{
   );
 };
 
+// ─── CUSTOMERS ────────────────────────────────────────────────────────────────
+const Customers = ({data,setData,user})=>{
+  const [selected,setSelected]=useState(null);
+  const [tierFilter,setTierFilter]=useState("All");
+
+  const rows = data.customers.filter(c=>tierFilter==="All"||c.tier===tierFilter);
+  const daysUntil = d => d ? Math.ceil((new Date(d)-new Date(today()))/86400000) : null;
+
+  return (
+    <div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:10}}>
+        <h2 style={{margin:0,fontSize:20,fontWeight:800,color:T.charcoal}}>Customers</h2>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {["All","Basic","Elite","Enterprise"].map(t=>(
+            <button key={t} onClick={()=>setTierFilter(t)} style={{padding:"6px 12px",borderRadius:20,border:`1.5px solid ${tierFilter===t?T.teal:T.border}`,background:tierFilter===t?T.tealXL:"none",color:tierFilter===t?T.teal:T.charcoalL,fontSize:12,fontWeight:600,cursor:"pointer"}}>{t}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{background:T.white,borderRadius:14,border:`1px solid ${T.border}`,overflow:"hidden"}}>
+        <div style={{overflowX:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",minWidth:760}}>
+            <thead>
+              <tr style={{background:T.cream}}>
+                {["Name","Business","Tier","Signed Up","Renews","Next Account Call"].map(h=>(
+                  <th key={h} style={{padding:"10px 14px",textAlign:"left",fontSize:11,fontWeight:700,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,whiteSpace:"nowrap"}}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(c=>{
+                const tier = TIER_INFO[c.tier]||{};
+                const d = daysUntil(c.nextCallDate);
+                return (
+                  <tr key={c.id} onClick={()=>setSelected(c)} style={{borderTop:`1px solid ${T.border}`,cursor:"pointer"}}>
+                    <td style={{padding:"12px 14px"}}><span style={{fontSize:14,fontWeight:600,color:T.charcoal}}>{c.name}</span></td>
+                    <td style={{padding:"12px 14px",fontSize:13,color:T.charcoalL}}>{c.business}</td>
+                    <td style={{padding:"12px 14px"}}><Badge label={c.tier} bg={tier.bg} color={tier.color}/></td>
+                    <td style={{padding:"12px 14px",fontSize:12,color:T.charcoalL}}>{fmt(c.signupDate)}</td>
+                    <td style={{padding:"12px 14px",fontSize:12,color:T.charcoalL}}>{fmt(c.renewalDate)}</td>
+                    <td style={{padding:"12px 14px",fontSize:12,color:c.nextCallDate?(d<=7?T.teal:T.charcoalL):T.charcoalL,fontWeight:c.nextCallDate&&d<=7?700:400}}>
+                      {c.nextCallDate ? `${fmt(c.nextCallDate)} (${d}d)` : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+              {rows.length===0 && (
+                <tr><td colSpan={6} style={{padding:"24px 14px",textAlign:"center",fontSize:13,color:T.charcoalL}}>No customers on this tier yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {selected && (()=>{
+        const tier = TIER_INFO[selected.tier]||{includes:[]};
+        return (
+          <Modal title={selected.business} onClose={()=>setSelected(null)} width={580}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
+              <div><p style={{margin:"0 0 2px",fontSize:11,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,fontWeight:600}}>Contact</p><p style={{margin:0,fontSize:14,color:T.charcoal}}>{selected.name}</p></div>
+              <div><p style={{margin:"0 0 2px",fontSize:11,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,fontWeight:600}}>Trade</p><p style={{margin:0,fontSize:14,color:T.charcoal}}>{selected.trade}</p></div>
+              <div><p style={{margin:"0 0 2px",fontSize:11,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,fontWeight:600}}>Phone</p><p style={{margin:0,fontSize:14,color:T.charcoal}}>{selected.phone}</p></div>
+              <div><p style={{margin:"0 0 2px",fontSize:11,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,fontWeight:600}}>Email</p><p style={{margin:0,fontSize:14,color:T.teal}}>{selected.email}</p></div>
+              <div><p style={{margin:"0 0 2px",fontSize:11,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,fontWeight:600}}>Signed Up</p><p style={{margin:0,fontSize:14,color:T.charcoal}}>{fmt(selected.signupDate)}</p></div>
+              <div><p style={{margin:"0 0 2px",fontSize:11,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5,fontWeight:600}}>Renews</p><p style={{margin:0,fontSize:14,color:T.charcoal}}>{fmt(selected.renewalDate)}</p></div>
+            </div>
+
+            <div style={{marginBottom:16}}>
+              <p style={{margin:"0 0 8px",fontSize:12,fontWeight:700,color:T.charcoalL,textTransform:"uppercase",letterSpacing:.5}}>Plan — {selected.tier} ({tier.price?`£${tier.price}/mo`:"Custom pricing"})</p>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {tier.includes.map(item=>(
+                  <Badge key={item} label={item} bg={T.cream} color={T.charcoal}/>
+                ))}
+              </div>
+            </div>
+
+            <div style={{background:selected.nextCallDate?T.tealXL:T.cream,borderRadius:10,padding:"12px 14px"}}>
+              <p style={{margin:"0 0 4px",fontSize:12,fontWeight:700,color:selected.nextCallDate?T.teal:T.charcoalL,textTransform:"uppercase",letterSpacing:.5}}>Next Account Management Call</p>
+              <p style={{margin:0,fontSize:13,color:T.charcoal}}>{selected.nextCallDate?fmt(selected.nextCallDate):"Not scheduled — Basic plan doesn't include account management calls."}</p>
+            </div>
+          </Modal>
+        );
+      })()}
+    </div>
+  );
+};
+
 // ─── MEETINGS ─────────────────────────────────────────────────────────────────
 const Meetings = ({data,setData,user})=>{
   const [showAdd,setShowAdd]=useState(false);
@@ -927,6 +1031,7 @@ export default function App() {
       ...data.decisions.filter(d=>d.title.toLowerCase().includes(q)).map(d=>({type:"Decision",label:d.title,id:d.id,nav:"decisions"})),
       ...data.ideas.filter(i=>i.title.toLowerCase().includes(q)).map(i=>({type:"Idea",label:i.title,id:i.id,nav:"ideas"})),
       ...data.leads.filter(l=>l.company.toLowerCase().includes(q)||l.contact.toLowerCase().includes(q)).map(l=>({type:"Lead",label:l.company,id:l.id,nav:"crm"})),
+      ...data.customers.filter(c=>c.business.toLowerCase().includes(q)||c.name.toLowerCase().includes(q)).map(c=>({type:"Customer",label:c.business,id:c.id,nav:"customers"})),
     ].slice(0,8);
     setSearchResults(results);
   },[search,data]);
@@ -973,6 +1078,7 @@ export default function App() {
     tasks:<Tasks user={user} data={data} setData={setData}/>,
     projects:<Projects data={data} setData={setData} user={user}/>,
     crm:<CRM data={data} setData={setData} user={user}/>,
+    customers:<Customers data={data} setData={setData} user={user}/>,
     decisions:<Decisions data={data} setData={setData} user={user}/>,
     ideas:<Ideas data={data} setData={setData} user={user}/>,
     meetings:<Meetings data={data} setData={setData} user={user}/>,
